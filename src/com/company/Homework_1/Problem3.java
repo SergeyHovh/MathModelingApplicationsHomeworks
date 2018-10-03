@@ -15,12 +15,9 @@ public class Problem3 extends BaseProblem {
     }
 
     public static Set<Double> getFixedPoints(double r) {
-        System.out.println("Problem 3");
-        int roundErr = 10000;
         Set<Double> result = new TreeSet<>();
         for (double i = 1; i < 100; i++) {
-            double j = Math.round(Problem3.getFixedPoint(i / 1000, r) * roundErr);
-            result.add(j / roundErr);
+            result.add(round(Problem3.getFixedPoint(i / 1000, r)));
         }
         return result;
     }

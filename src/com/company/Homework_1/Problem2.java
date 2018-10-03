@@ -31,7 +31,7 @@ public class Problem2 extends BaseProblem {
             double i = getNthElement(n, r);
             result.add(i);
             r += dR;
-            System.out.println(r + " " + i);
+            System.out.println("r = [" + r + "], Nth element = [" + i + "]");
         }
         return result;
     }
@@ -42,7 +42,7 @@ public class Problem2 extends BaseProblem {
             double i = getNthElement10(n, r);
             result.add(i);
             r += dR;
-            System.out.println(r + " " + i);
+            System.out.println("r = [" + r + "], Nth element = [" + i + "]");
         }
         return result;
     }
