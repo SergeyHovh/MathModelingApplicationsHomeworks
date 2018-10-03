@@ -1,0 +1,6 @@
+problem 1 (see excel file)
+a) there is no such N as both lines are the same in the end and the amplitutde is not bigger than 0.005
+b) for d=4 n=40. X(40)/x(40) = 1.52
+
+problem 2
+coding part is done in a java project (intellij) and data is from there. visualisation is in excel file.
