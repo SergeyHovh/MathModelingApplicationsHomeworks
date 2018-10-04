@@ -2,7 +2,7 @@ package com.company.Homework_1;
 
 public class BaseProblem {
     static double logisticMap(double x_0, double R) {
-        return 4 * R * x_0 * (1 - x_0);
+        return round(4 * R * x_0 * (1 - x_0), 10);
     }
 
     static double logisticMap10(double x_0, double R) {

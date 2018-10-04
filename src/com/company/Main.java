@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         // problem 2
         System.out.println("Problem 2");
-        int n = 1000;
+        int n = 200;
         Problem2.compute(n, Problem2.r, Problem2.R);
         System.out.println("/////////////////////////////////////////////////////////////////////////////////////////");
         Problem2.compute10(n, Problem2.r, Problem2.R);

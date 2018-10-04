@@ -17,23 +17,44 @@ public class Problem3 extends BaseProblem {
     public static Set<Double> getFixedPoints(double r) {
         Set<Double> result = new TreeSet<>();
         for (double i = 1; i < 100; i++) {
-            result.add(round(Problem3.getFixedPoint(i / 1000, r)));
+            for (double v : getFixedPoint(i / 1000, r)) {
+                if (v > 0)
+                    result.add(round(v));
+            }
         }
         return result;
     }
 
-    static double getFixedPoint(double x_0, double r) {
+    public static double[] getFixedPoint(double x_0, double r) {
+        double result[] = null;
+        int period = -1;
+        int iter = 0;
+        int chaos = 0;
+        double val = -1;
         double point = x_0;
-        double limit = 0.0000001;
-        double res = nestedLogisticMap(x_0, r);
         while (true) {
-//            System.out.println(point + " " + res);
-            double difference = point - res;
-            if (difference < limit && difference > -limit) {
-                return point;
+            if (iter == period - 1) {
+                return result;
             } else {
-                point = nestedLogisticMap(point, r);
-                res = nestedLogisticMap(res, r);
+                if (iter == 1000) { // picking random value
+                    val = point;
+                    iter = 0;
+                    ++chaos;
+                }
+                ++iter;
+                if (chaos == 3) { // if iterations are over 3000 data set is considered chaotic
+                    return new double[]{-1};
+                }
+                point = nestedLogisticMap(point, r); // working method
+
+                if (val == point) { // determining the period
+                    period = iter;
+                    result = new double[period];
+                    iter = 0;
+                }
+                if (iter < period && result != null) { // init the array
+                    result[iter] = point;
+                }
             }
         }
     }
