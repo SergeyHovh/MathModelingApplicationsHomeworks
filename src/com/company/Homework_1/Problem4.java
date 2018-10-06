@@ -3,10 +3,10 @@ package com.company.Homework_1;
 import java.util.Set;
 
 public class Problem4 extends BaseProblem {
-    public static void compute() {
-        for (double i = 0; i < 1000; i++) { // tested, after 862 it stops
+    public static void compute(Function function) {
+        for (double i = 0; i < 1000; i++) {
             double iter = i / 1000;
-            Set<Double> set = Problem3.getFixedPoints(iter);
+            Set<Double> set = Problem3.getFixedPoints(iter, function);
             if (set.contains(0.5)) {
                 if (set.size() == 2) {
                     System.out.println(set + " r: " + iter);

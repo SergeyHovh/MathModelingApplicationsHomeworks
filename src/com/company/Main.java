@@ -15,10 +15,10 @@ public class Main {
 
         // problem 3
         System.out.println("Problem 3");
-        System.out.println(Problem3.getFixedPoints(Problem3.R));
+        System.out.println(Problem3.getFixedPoints(Problem3.R, Problem3::nestedLogisticMap));
 
         // problem 4
         System.out.println("Problem 4");
-        Problem4.compute();
+        Problem4.compute(Problem3::nestedLogisticMap);
     }
 }

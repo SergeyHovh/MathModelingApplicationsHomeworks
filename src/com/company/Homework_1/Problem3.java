@@ -14,10 +14,10 @@ public class Problem3 extends BaseProblem {
         return logisticMap(logisticMap(x_0, r), r);
     }
 
-    public static Set<Double> getFixedPoints(double r) {
+    public static Set<Double> getFixedPoints(double r, Function function) {
         Set<Double> result = new TreeSet<>();
         for (double i = 1; i < 100; i++) {
-            for (double v : getFixedPoint(i / 1000, r)) {
+            for (double v : getFixedPoint(i / 1000, r, function)) {
                 if (v > 0)
                     result.add(round(v));
             }
@@ -25,7 +25,7 @@ public class Problem3 extends BaseProblem {
         return result;
     }
 
-    public static double[] getFixedPoint(double x_0, double r) {
+    public static double[] getFixedPoint(double x_0, double r, Function function) {
         double result[] = null;
         int period = -1;
         int iter = 0;
@@ -45,7 +45,7 @@ public class Problem3 extends BaseProblem {
                 if (chaos == 3) { // if iterations are over 3000 data set is considered chaotic
                     return new double[]{-1};
                 }
-                point = nestedLogisticMap(point, r); // working method
+                point = function.action(point, r); // working method
 
                 if (val == point) { // determining the period
                     period = iter;
