@@ -1,24 +1,14 @@
 package com.company;
 
-import com.company.Homework_1.Problem2;
-import com.company.Homework_1.Problem3;
-import com.company.Homework_1.Problem4;
+import com.company.Homework_2.PiRandom;
+
+import java.util.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        // problem 2
-        System.out.println("Problem 2");
-        int n = 200;
-        Problem2.compute(n, Problem2.r, Problem2.R);
-        System.out.println("/////////////////////////////////////////////////////////////////////////////////////////");
-        Problem2.compute10(n, Problem2.r, Problem2.R);
-
-        // problem 3
-        System.out.println("Problem 3");
-        System.out.println(Problem3.getFixedPoints(Problem3.R, Problem3::nestedLogisticMap));
-
-        // problem 4
-        System.out.println("Problem 4");
-        Problem4.compute(Problem3::nestedLogisticMap);
+        Vector<Integer> vector = PiRandom.Random(0, 100);
+        for (Integer integer : vector) {
+            System.out.println(integer);
+        }
     }
 }

@@ -18,8 +18,7 @@ public class Problem3 extends BaseProblem {
         Set<Double> result = new TreeSet<>();
         for (double i = 1; i < 100; i++) {
             for (double v : getFixedPoint(i / 1000, r, function)) {
-                if (v > 0)
-                    result.add(round(v));
+                result.add(round(v));
             }
         }
         return result;
@@ -36,17 +35,22 @@ public class Problem3 extends BaseProblem {
             if (iter == period - 1) {
                 return result;
             } else {
-                if (iter == 1000) { // picking random value
+                if (iter == 128) { // picking random value
                     val = point;
                     iter = 0;
                     ++chaos;
                 }
                 ++iter;
-                if (chaos == 3) { // if iterations are over 3000 data set is considered chaotic
-                    return new double[]{-1};
+                if (chaos == 10) { // if iterations are over 3000 data set is considered chaotic
+                    return new double[]{Double.MIN_VALUE};
                 }
-                point = function.action(point, r); // working method
 
+                /*System.out.print("point = " + point);
+                System.out.print(" val = " + val);
+                System.out.print(" iter = " + iter);
+                System.out.println(" chaos = " + chaos);*/
+
+                point = round(function.action(point, r), 10); // working method
                 if (val == point) { // determining the period
                     period = iter;
                     result = new double[period];
