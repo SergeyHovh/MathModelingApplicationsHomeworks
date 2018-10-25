@@ -1,4 +1,4 @@
-package com.company.Homework_2;
+package com.company.Homeworks.Homework_2;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -31,7 +31,7 @@ public class PiRandom {
     public static Vector<Integer> Random(int from, int to) {
         Vector<Integer> result = new Vector<>();
         int add;
-        for (int i = new Random().nextInt(10); i < PI_array.length - 10; i += add) {
+        for (int i = new Random().nextInt(10); i < PI_array.length - 15; i += add) {
             result.add(random(from, to, i));
             add = get(i).length();
         }
@@ -39,12 +39,14 @@ public class PiRandom {
     }
 
     private static int random(int from, int to, int at) {
-        int res = (int) (from + Long.valueOf(get(at)) % (to + 1));
+        int res = (int) (from +
+                Long.valueOf(get(at)) %
+                        (to - from + 1));
         return res;
     }
 
     private static String get(int at) {
-        int a = PI_array[at - 1] - 48;
+        int a = PI_array[at] - 48;
         char[] res = Arrays.copyOfRange(PI_array, at, at + a + 1);
         while (res[0] == 0) {
             res = Arrays.copyOfRange(res, 1, res.length);

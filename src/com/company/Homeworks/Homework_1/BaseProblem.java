@@ -1,4 +1,4 @@
-package com.company.Homework_1;
+package com.company.Homeworks.Homework_1;
 
 public class BaseProblem {
     public static double logisticMap(double x_0, double R) {

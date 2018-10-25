@@ -1,4 +1,4 @@
-package com.company.Homework_1;
+package com.company.Homeworks.Homework_1;
 
 import java.util.Set;
 
