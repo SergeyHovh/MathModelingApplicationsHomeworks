@@ -7,23 +7,27 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RectangularShape;
 import java.awt.geom.RoundRectangle2D;
+import java.util.Random;
 
 class DrawTable extends JPanel implements ActionListener {
     Timer timer = new Timer(5, this);
     RoundRectangle2D table;
     Ellipse2D ball, centerLeft, centerRight;
-    private int radius, length;
-    private double tableX = 50, tableY = 50, ballX, ballY, momentumX = 0.7, momentumY = 0.7;
+    private int diameter, length;
+    private double theta = new Random().nextDouble();
+    private double tableX = 50, tableY = 50, ballX, ballY;
+    private double momentumX = Math.sin(theta), momentumY = Math.cos(theta);
+//    private double momentumX = 0.7, momentumY = 0.7;
 
-    DrawTable(int radius, int length, double ballX, double ballY) {
-        this.radius = radius;
+    DrawTable(int diameter, int length, double ballX, double ballY) {
+        this.diameter = diameter;
         this.length = length;
         this.ballX = ballX;
         this.ballY = ballY;
     }
 
-    DrawTable(int radius, int length) {
-        this.radius = radius;
+    DrawTable(int diameter, int length) {
+        this.diameter = diameter;
         this.length = length;
         this.ballX = 2 * tableX;
         this.ballY = 2 * tableY;
@@ -34,7 +38,7 @@ class DrawTable extends JPanel implements ActionListener {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
         // table
-        RoundRectangle2D billiardsTable = new RoundRectangle2D.Double(tableX, tableY, length, radius, radius, radius);
+        RoundRectangle2D billiardsTable = new RoundRectangle2D.Double(tableX, tableY, length, diameter, diameter, diameter);
         graphics2D.setColor(Color.ORANGE);
         graphics2D.fill(billiardsTable);
         this.table = billiardsTable;
@@ -67,10 +71,8 @@ class DrawTable extends JPanel implements ActionListener {
         }
         if (!(ballY > tableY && ballY + ball.getHeight() < tableY + table.getHeight())) {
             momentumY *= -1;
-//            System.out.println(table.getCenterX() + " " + table.getCenterY());
         }
         /*if (!table.intersects(ball.getBounds())) {
-            double Px = momentumX, Py = momentumY;
             double Y_0 = ball.getCenterY();
             double X_0 = ball.getCenterX() - center.getCenterX();
             System.out.println(X_0 + " " + Y_0);
@@ -78,10 +80,23 @@ class DrawTable extends JPanel implements ActionListener {
         }*/
         if ((ball.getCenterX() > center.getCenterX() && momentumX > 0 && ball.getCenterX() > table.getCenterX())
                 || (ball.getCenterX() < center.getCenterX() && momentumX < 0) && ball.getCenterX() < table.getCenterX()) {
-//            System.out.println(ball.getCenterX() + " " + center.getCenterX());
-            System.out.println(distance(ball, center) + " " + radius / 2);
-            if (distance(ball, center) >= radius / 2) {
-                momentumX *= -1;
+//            System.out.println(distance(ball, center) + " " + diameter / 2);
+            if (distance(ball, center) >= diameter / 2) {
+                double Px = momentumX, Py = momentumY;
+                double deltaY = ball.getCenterY() - center.getCenterY(), deltaX = ball.getCenterX() - center.getCenterX();
+                double quadDelta = Math.pow(deltaY, 2) - Math.pow(deltaX, 2);
+//                System.out.println("delta x " + deltaX + " | delta y " + deltaY);
+//                System.out.println("Px prime " + (quadDelta * Px - 2 * deltaX * deltaY * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
+//                System.out.println("Py prime " + (-2 * deltaX * deltaY * Px - quadDelta * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
+//                System.out.println("---------" + diameter / 2 + "----------");
+                double PxPrime = (quadDelta * Px - 2 * deltaX * deltaY * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                double PyPrime = -(2 * deltaX * deltaY * Px + quadDelta * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                System.out.println(Math.pow(PxPrime, 2) + Math.pow(PyPrime, 2));
+                momentumX = PxPrime;
+                momentumY = PyPrime;
+//                momentumX = Px * (Math.pow(ball.getCenterY() - center.getCenterY(), 2)
+//                        - Math.pow(ball.getCenterX() - center.getCenterX(), 2))
+//                        - 2 * Py * (ball.getCenterY() - center.getCenterY()) * (ball.getCenterX() - center.getCenterX());
             }
         }
         repaint();
