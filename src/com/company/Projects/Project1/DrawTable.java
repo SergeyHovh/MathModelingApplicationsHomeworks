@@ -10,14 +10,14 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.Random;
 
 class DrawTable extends JPanel implements ActionListener {
-    Timer timer = new Timer(5, this);
-    RoundRectangle2D table;
-    Ellipse2D ball, centerLeft, centerRight;
+    private Timer timer = new Timer(5, this);
+    private RoundRectangle2D table;
+    private Ellipse2D ball, centerLeft, centerRight;
     private int diameter, length;
     private double theta = new Random().nextDouble();
     private double tableX = 50, tableY = 50, ballX, ballY;
+    //    private double momentumX = 0.7, momentumY = 0.7;
     private double momentumX = Math.sin(theta), momentumY = Math.cos(theta);
-//    private double momentumX = 0.7, momentumY = 0.7;
 
     DrawTable(int diameter, int length, double ballX, double ballY) {
         this.diameter = diameter;
@@ -29,7 +29,7 @@ class DrawTable extends JPanel implements ActionListener {
     DrawTable(int diameter, int length) {
         this.diameter = diameter;
         this.length = length;
-        this.ballX = 2 * tableX;
+        this.ballX = 4 * tableX;
         this.ballY = 2 * tableY;
     }
 
@@ -38,18 +38,19 @@ class DrawTable extends JPanel implements ActionListener {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
         // table
-        RoundRectangle2D billiardsTable = new RoundRectangle2D.Double(tableX, tableY, length, diameter, diameter, diameter);
+        RoundRectangle2D billiardsTable = new RoundRectangle2D.Double(tableX, tableY, length + diameter, diameter, diameter, diameter);
         graphics2D.setColor(Color.ORANGE);
         graphics2D.fill(billiardsTable);
         this.table = billiardsTable;
         // ball
-        Ellipse2D ball = new Ellipse2D.Double(ballX, ballY, 20, 20);
+        Ellipse2D ball = new Ellipse2D.Double(ballX, ballY, 10, 10);
         graphics2D.setColor(Color.BLACK);
         graphics2D.fill(ball);
         this.ball = ball;
         // center
-        Ellipse2D centerRight = new Ellipse2D.Double(table.getCenterX() + length / 4, table.getCenterY(), 10, 10);
-        Ellipse2D centerLeft = new Ellipse2D.Double(table.getCenterX() - length / 4, table.getCenterY(), 10, 10);
+        double centerD = 1;
+        Ellipse2D centerRight = new Ellipse2D.Double(table.getCenterX() + length / 2, table.getCenterY(), centerD, centerD);
+        Ellipse2D centerLeft = new Ellipse2D.Double(table.getCenterX() - length / 2, table.getCenterY(), centerD, centerD);
         graphics2D.setColor(Color.BLACK);
         graphics2D.fill(centerLeft);
         graphics2D.fill(centerRight);
@@ -69,34 +70,21 @@ class DrawTable extends JPanel implements ActionListener {
         } else {
             center = centerLeft;
         }
-        if (!(ballY > tableY && ballY + ball.getHeight() < tableY + table.getHeight())) {
-            momentumY *= -1;
-        }
-        /*if (!table.intersects(ball.getBounds())) {
-            double Y_0 = ball.getCenterY();
-            double X_0 = ball.getCenterX() - center.getCenterX();
-            System.out.println(X_0 + " " + Y_0);
-            momentumX = 0; momentumY  = 0;
-        }*/
-        if ((ball.getCenterX() > center.getCenterX() && momentumX > 0 && ball.getCenterX() > table.getCenterX())
-                || (ball.getCenterX() < center.getCenterX() && momentumX < 0) && ball.getCenterX() < table.getCenterX()) {
-//            System.out.println(distance(ball, center) + " " + diameter / 2);
-            if (distance(ball, center) >= diameter / 2) {
+
+        if (!table.contains(ball.getBounds())) {
+            if (ball.getX() > centerLeft.getX() && ball.getX() < centerRight.getX()) {
+                ballY -= 2 * momentumY;
+                momentumY *= -1;
+            } else {
                 double Px = momentumX, Py = momentumY;
                 double deltaY = ball.getCenterY() - center.getCenterY(), deltaX = ball.getCenterX() - center.getCenterX();
                 double quadDelta = Math.pow(deltaY, 2) - Math.pow(deltaX, 2);
-//                System.out.println("delta x " + deltaX + " | delta y " + deltaY);
-//                System.out.println("Px prime " + (quadDelta * Px - 2 * deltaX * deltaY * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
-//                System.out.println("Py prime " + (-2 * deltaX * deltaY * Px - quadDelta * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
-//                System.out.println("---------" + diameter / 2 + "----------");
                 double PxPrime = (quadDelta * Px - 2 * deltaX * deltaY * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
                 double PyPrime = -(2 * deltaX * deltaY * Px + quadDelta * Py) / (Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-                System.out.println(Math.pow(PxPrime, 2) + Math.pow(PyPrime, 2));
+                ballX -= 2 * momentumX;
+                ballY -= 2 * momentumY;
                 momentumX = PxPrime;
                 momentumY = PyPrime;
-//                momentumX = Px * (Math.pow(ball.getCenterY() - center.getCenterY(), 2)
-//                        - Math.pow(ball.getCenterX() - center.getCenterX(), 2))
-//                        - 2 * Py * (ball.getCenterY() - center.getCenterY()) * (ball.getCenterX() - center.getCenterX());
             }
         }
         repaint();
@@ -106,6 +94,13 @@ class DrawTable extends JPanel implements ActionListener {
         return Math.sqrt(
                 Math.pow(shape1.getCenterX() - shape2.getCenterX(), 2)
                         + Math.pow(shape1.getCenterY() - shape2.getCenterY(), 2)
+        );
+    }
+
+    double distance(RectangularShape shape, double x, double y) {
+        return Math.sqrt(
+                Math.pow(shape.getCenterX() - x, 2)
+                        + Math.pow(shape.getCenterY() - y, 2)
         );
     }
 }

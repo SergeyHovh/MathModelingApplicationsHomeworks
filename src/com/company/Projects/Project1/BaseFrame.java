@@ -8,7 +8,7 @@ public class BaseFrame extends JFrame {
         setVisible(true);
         setLocationRelativeTo(null);
         setSize(w, h);
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
