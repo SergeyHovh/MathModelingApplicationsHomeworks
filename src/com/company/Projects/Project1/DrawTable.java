@@ -10,11 +10,12 @@ class DrawTable extends JPanel implements ActionListener {
     private Timer timer;
 
     DrawTable(int length, int diameter) {
+        double unitLength = 100;
         double tableX = 50;
         double tableY = 50;
-        table = new BilliardsTable(tableX, tableY, length, diameter);
+        table = new BilliardsTable(tableX, tableY, length * unitLength, diameter * unitLength);
         timer = new Timer(5, this);
-        fill(100, 10, table);
+        fill(2000, 5, table, false);
     }
 
     @Override
@@ -33,9 +34,9 @@ class DrawTable extends JPanel implements ActionListener {
         timer.start();
     }
 
-    private void fill(int N, double size, BilliardsTable billiardsTable) {
+    private void fill(int N, double size, BilliardsTable billiardsTable, boolean nextToEachOther) {
         for (int i = 0; i < N; i++) {
-            billiardsTable.add(new BilliardsBall(size));
+            billiardsTable.add(new BilliardsBall(size), nextToEachOther, N);
         }
     }
 

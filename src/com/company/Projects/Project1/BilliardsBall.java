@@ -6,14 +6,14 @@ import java.util.Random;
 class BilliardsBall extends Ellipse2D.Double {
     private double theta = new Random().nextDouble();
     private double momentumModule = 2;
-    private double momentumX = momentumModule * Math.sin(theta), momentumY = momentumModule * Math.cos(theta);
+    double momentumX = momentumModule * Math.sin(theta), momentumY = momentumModule * Math.cos(theta);
 
     BilliardsBall(double radius) {
         super(0, 0, radius, radius);
         this.setMomentum(momentumX, momentumY);
     }
 
-    private void setMomentum(double x, double y) {
+    void setMomentum(double x, double y) {
         this.momentumX = x;
         this.momentumY = y;
     }
