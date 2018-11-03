@@ -8,7 +8,7 @@ import java.util.Vector;
 
 class BilliardsTable extends RoundRectangle2D.Double {
     Ellipse2D centerLeft, centerRight;
-    double length, diameter;
+    private double length, diameter;
     private Vector<BilliardsBall> balls;
 
     BilliardsTable(double x, double y, double length, double diameter) {
@@ -20,23 +20,25 @@ class BilliardsTable extends RoundRectangle2D.Double {
         this.diameter = diameter;
     }
 
-    void add(BilliardsBall ball, boolean nextToEachOther, int N) {
-        double x = 0, y = 0;
+    void add(BilliardsBall ball, boolean nextToEachOther) {
+        double x = java.lang.Double.MAX_VALUE;
+        double y = x;
         if (nextToEachOther) {
             if (balls.isEmpty()) {
                 while (!getBounds().contains(x, y)) {
-                    y = getHeight() * new Random().nextDouble();
                     x = getWidth() * new Random().nextDouble();
+                    y = getHeight() * new Random().nextDouble();
                 }
+                System.out.println(x + " " + y);
                 ball.setFrame(x, y, ball.getHeight(), ball.getWidth());
                 this.balls.add(ball);
             } else {
-                ball.setFrame(balls.lastElement().getX() + ball.getWidth() / N, balls.lastElement().getY(), ball.getHeight(), ball.getWidth());
+                ball.setFrame(balls.lastElement().getX() + Math.pow(10, -5), balls.lastElement().getY(), ball.getHeight(), ball.getWidth());
                 ball.setMomentum(balls.lastElement().momentumX, balls.lastElement().momentumY);
                 this.balls.add(ball);
             }
         } else {
-            if (length / diameter > 0.5) {
+            if (length / diameter > 0.3) {
                 while (!(y > getY())
                         || !(y < getY() + getHeight())
                         || !(x > centerLeft.getCenterX())
@@ -59,7 +61,7 @@ class BilliardsTable extends RoundRectangle2D.Double {
         return balls;
     }
 
-    double distance(RectangularShape shape, double x, double y) {
+    private double distance(RectangularShape shape, double x, double y) {
         return Math.sqrt(
                 Math.pow(shape.getCenterX() - x, 2)
                         + Math.pow(shape.getCenterY() - y, 2)
