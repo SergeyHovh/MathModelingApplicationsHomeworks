@@ -4,21 +4,44 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Formatter;
+import java.util.Vector;
 
 class DrawTable extends JPanel implements ActionListener {
-    int hitNumber = 200;
+    private static final String PATH = "src\\com\\company\\Projects\\Project1\\data\\data.txt";
+    private static double unitLength = 200;
+    private Formatter file;
     private BilliardsTable table;
-    private BilliardsBall ball1, ball2;
     private Timer timer;
+    private boolean reverse = false, hole = false;
+    private int criticalHits = 0, bounceCount = 0, numberOfParticles;
+    private Vector<Integer> ballsLeft = new Vector<>();
+    private int N = 0;
 
-    DrawTable(double length, double diameter, int numberOfParticles, int particleSize, boolean nextToEachOther) {
-        double unitLength = 100;
+    DrawTable(double length) {
+        this(length, 1);
+    }
+
+    DrawTable(double length, double diameter) {
         double tableX = 50;
         double tableY = 50;
         table = new BilliardsTable(tableX, tableY, length * unitLength, diameter * unitLength);
         timer = new Timer(5, this);
-        fill(numberOfParticles, particleSize, table, nextToEachOther);
+        timer.start();
+        try {
+            file = new Formatter(PATH);
+            file.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static double getUnitLength() {
+        return unitLength;
+    }
+
+    public static void setUnitLength(double unitLength) {
+        DrawTable.unitLength = unitLength;
     }
 
     @Override
@@ -29,12 +52,45 @@ class DrawTable extends JPanel implements ActionListener {
         graphics2D.setColor(Color.ORANGE);
         graphics2D.fill(this.table);
         // fill with billiard balls
-        for (BilliardsBall tableBall : table.getBalls()) {
-            graphics2D.setColor(Color.BLACK);
-            tableBall.bounce(table, graphics2D);
-            graphics2D.fill(tableBall);
+        Vector<BilliardsBall> balls = table.getBalls();
+        if (balls.isEmpty()) {
+            close();
+        } else {
+            for (int i = 0; i < table.getBalls().size(); ++i) {
+                BilliardsBall tableBall = table.getBalls().elementAt(i);
+                graphics2D.setColor(Color.BLACK);
+                tableBall.bounce(table);
+                bounceCount = table.getBouncedOffTheTable();
+                // reversible
+                if (reverse) {
+                    tableBall.reverse(graphics2D, criticalHits);
+                }
+                // hole
+                if (hole) {
+                    table.drawHole(graphics2D);
+                    if (table.hole.intersects(tableBall.getBounds2D())) {
+                        table.remove(tableBall);
+                    }
+                    // write into data.txt
+                    ballsLeft.add(table.getBalls().size());
+                    if (bounceCount % numberOfParticles / 10 == 0) // taking every n-th value
+                        file.format("%s", table.getBalls().size() + "\n");
+                    if (tableBall.getBounceCount() > Math.sqrt(numberOfParticles * N)) close();
+                }
+                graphics2D.fill(tableBall);
+            }
         }
-        timer.start();
+    }
+
+    private void close() {
+        System.out.println("---------------------------ֆսյո--------------------------");
+        System.out.println(ballsLeft.size());
+        file.close();
+        timer.stop();
+    }
+
+    public void setN(int n) {
+        N = n;
     }
 
     private void fill(int N, double size, BilliardsTable billiardsTable, boolean nextToEachOther) {
@@ -46,29 +102,26 @@ class DrawTable extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
-//        for (BilliardsBall billiardsBall : table.getBalls()) {
-//            Double V_X = billiardsBall.get(200, BilliardsBall.V_X);
-//            if (V_X != null) {
-//                System.out.println(V_X);
-//            }
-//        }
-
-        ball1 = table.getBalls().firstElement();
-        ball2 = table.getBalls().lastElement();
-        int i = ball1.getBounceCount();
-        Double X_1 = ball1.get(i, BilliardsBall.X);
-        Double Y_1 = ball1.get(i, BilliardsBall.Y);
-
-        Double X_2 = ball2.get(i, BilliardsBall.X);
-        Double Y_2 = ball2.get(i, BilliardsBall.Y);
-//        if (!(X_1 == null && X_2 == null && Y_1 == null && Y_2 == null)) {
-//            System.out.println(i + ") " + distance(X_1, Y_1, X_2, Y_2));
-//        }
     }
 
     double distance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(
                 Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)
         );
+    }
+
+    void addParticles(int numberOfParticles, int particleSize, boolean nextToEachOther) {
+        this.numberOfParticles = numberOfParticles;
+        fill(numberOfParticles, particleSize, table, nextToEachOther);
+    }
+
+    public void addHole(boolean hole) {
+        this.hole = hole;
+    }
+
+    public void setReverse(int criticalHits) {
+        fill(1, 10, table, false);
+        this.reverse = true;
+        this.criticalHits = criticalHits;
     }
 }
