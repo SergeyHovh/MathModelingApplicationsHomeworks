@@ -9,7 +9,7 @@ import java.util.Vector;
 
 class DrawTable extends JPanel implements ActionListener {
     private static final String PATH = "src\\com\\company\\Projects\\Project1\\data\\data.txt";
-    private static double unitLength = 200;
+    private static double unitLength = 100;
     private Formatter file;
     private BilliardsTable table;
     private Timer timer;

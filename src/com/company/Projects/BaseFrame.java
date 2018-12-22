@@ -1,9 +1,9 @@
-package com.company.Projects.Project1;
+package com.company.Projects;
 
 import javax.swing.*;
 
 public class BaseFrame extends JFrame {
-    BaseFrame(String name, int w, int h) {
+    public BaseFrame(String name, int w, int h) {
         super(name);
         setVisible(true);
 //        setLocationRelativeTo(null);
